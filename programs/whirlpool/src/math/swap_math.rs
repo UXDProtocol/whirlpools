@@ -1,7 +1,7 @@
 use std::convert::TryInto;
 
-use crate::errors::ErrorCode;
 use crate::math::*;
+use anchor_lang::prelude::*;
 
 #[derive(PartialEq, Debug)]
 pub struct SwapStepComputation {
@@ -19,7 +19,7 @@ pub fn compute_swap(
     sqrt_price_target: u128,
     amount_specified_is_input: bool,
     a_to_b: bool,
-) -> Result<SwapStepComputation, ErrorCode> {
+) -> Result<SwapStepComputation> {
     let fee_amount;
 
     let mut amount_fixed_delta = get_amount_fixed_delta(
@@ -37,7 +37,7 @@ pub fn compute_swap(
             FEE_RATE_MUL_VALUE - fee_rate as u128,
             FEE_RATE_MUL_VALUE,
         )?
-        .try_into()?;
+        .try_into().unwrap();
     }
 
     let next_sqrt_price = if amount_calc >= amount_fixed_delta {
@@ -92,7 +92,7 @@ pub fn compute_swap(
             fee_rate as u128,
             FEE_RATE_MUL_VALUE - fee_rate as u128,
         )?
-        .try_into()?;
+        .try_into().unwrap();
     }
 
     Ok(SwapStepComputation {
@@ -109,7 +109,7 @@ fn get_amount_fixed_delta(
     liquidity: u128,
     amount_specified_is_input: bool,
     a_to_b: bool,
-) -> Result<u64, ErrorCode> {
+) -> Result<u64> {
     if a_to_b == amount_specified_is_input {
         get_amount_delta_a(
             sqrt_price_current,
@@ -133,7 +133,7 @@ fn get_amount_unfixed_delta(
     liquidity: u128,
     amount_specified_is_input: bool,
     a_to_b: bool,
-) -> Result<u64, ErrorCode> {
+) -> Result<u64> {
     if a_to_b == amount_specified_is_input {
         get_amount_delta_b(
             sqrt_price_current,

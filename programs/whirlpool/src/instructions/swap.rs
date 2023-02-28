@@ -53,7 +53,7 @@ pub fn handler(
     sqrt_price_limit: u128,
     amount_specified_is_input: bool,
     a_to_b: bool, // Zero for one
-) -> ProgramResult {
+) -> Result<()> {
     let whirlpool = &mut ctx.accounts.whirlpool;
     let clock = Clock::get()?;
     // Update the global reward growth which increases as a function of time.
